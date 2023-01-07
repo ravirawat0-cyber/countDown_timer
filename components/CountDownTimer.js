@@ -5,8 +5,10 @@ import {
   Title,
   Wrapper,
   Message,
+  ButtonContainer,
 } from "./CountDownTimer.styles";
 import { useState, useEffect, useRef } from "react";
+import ReactAudioPlayer from "react-audio-player";
 
 export default function CountDownTimer() {
   const [hour, setHour] = useState(0);
@@ -14,13 +16,28 @@ export default function CountDownTimer() {
   const [sec, setSec] = useState(0);
   const [timerStatus, setTimerStatus] = useState(false);
   const timerStoppedRef = useRef();
+  const audioRef = useRef();
+  const [audio] = useState(
+    typeof Audio !== "undefined" && new Audio("beep.mp3")
+  );
+
+  const resetTimer = () => {
+    setTimerStatus(false);
+    setHour(0);
+    setMin(0);
+    setSec(0);
+    timerStoppedRef.current = null;
+  };
+
+  const formatTime = (timeNumber) => {
+    if (timeNumber.toString().length === 1) {
+      return "0" + timeNumber.toString();
+    } else return timeNumber.toString();
+  };
 
   useEffect(() => {
     if (timerStatus === true) {
       setTimeout(() => {
-        console.log("sec...", sec);
-        console.log("min...", min);
-        console.log("hour...", hour);
         if (hour === 0 && min === 0 && sec === 0) {
           // timer stops
           timerStoppedRef.current = true;
@@ -41,6 +58,12 @@ export default function CountDownTimer() {
       }, 1000);
     }
   });
+
+  useEffect(() => {
+    if (timerStoppedRef?.current && !timerStatus) {
+      audio.play();
+    }
+  }, [timerStatus]);
 
   return (
     <Wrapper>
@@ -74,15 +97,20 @@ export default function CountDownTimer() {
         />
       </InputWarraper>
       <Title style={{ fontSize: 50 }}>
-        {hour} : {min} : {sec}
+        {formatTime(hour)} : {formatTime(min)} : {formatTime(sec)}
       </Title>
-      <Button onClick={() => setTimerStatus(true)}>Start</Button>
+
+      <ButtonContainer>
+        <Button onClick={() => setTimerStatus(true)}>Start</Button>
+        <Button onClick={() => setTimerStatus(false)}>Stop</Button>
+        <Button onClick={resetTimer}>Reset</Button>
+      </ButtonContainer>
 
       <Message>
         {timerStoppedRef &&
           timerStoppedRef.current === true &&
           timerStatus === false &&
-          "Timer Stopped"}
+          "Time is Over!!!"}
       </Message>
     </Wrapper>
   );

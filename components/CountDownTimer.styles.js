@@ -31,7 +31,7 @@ export const Input = styled.input`
 `;
 
 export const Button = styled.button`
-  padding: 10px 40px;
+  padding: 10px 30px;
   border: none;
   border-radius: 7px;
   cursor: pointer;
@@ -40,7 +40,12 @@ export const Button = styled.button`
     transform: scale(0.95);
   }
 `;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  gap: 5px;
+`;
 export const Message = styled.p`
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 25px;
+  font-weight: 700;
 `;
